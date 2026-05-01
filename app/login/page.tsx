@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -24,10 +25,10 @@ export default function LoginPage() {
       <div className="relative w-full max-w-md glass-card p-8 shadow-2xl">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <Image 
-            src="/images/logo.png" 
-            alt="PostAI Logo" 
-            width={48} 
+          <Image
+            src="/images/logo.png"
+            alt="PostAI Logo"
+            width={48}
             height={48}
             className="rounded-xl mb-3 w-auto h-12"
           />
@@ -76,19 +77,51 @@ export default function LoginPage() {
   )
 }
 
-function LoginForm({ 
-  showPassword, 
-  setShowPassword 
-}: { 
+function LoginForm({
+  showPassword,
+  setShowPassword
+}: {
   showPassword: boolean
-  setShowPassword: (show: boolean) => void 
+  setShowPassword: (show: boolean) => void
 }) {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const supabase = createClient()
+
+  const handleGoogleLogin = async () => {
+    setError("")
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+  }
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      setError(error.message)
+      setIsLoading(false)
+    } else {
+      window.location.href = "/dashboard"
+    }
+  }
+
   return (
-    <form className="space-y-4">
+    <form onSubmit={handleEmailLogin} className="space-y-4">
       {/* Google Button */}
-      <Button 
-        type="button" 
-        variant="outline" 
+      <Button
+        type="button"
+        onClick={handleGoogleLogin}
+        variant="outline"
         className="w-full h-12 bg-white hover:bg-gray-50 text-gray-900 border-gray-200 gap-3"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -110,14 +143,21 @@ function LoginForm({
         </div>
       </div>
 
+      {error && (
+        <p className="text-sm text-red-500 text-center">{error}</p>
+      )}
+
       {/* Email */}
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
-        <Input 
-          id="email" 
-          type="email" 
+        <Input
+          id="email"
+          type="email"
           placeholder="your@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="h-12 bg-muted border-border"
+          required
         />
       </div>
 
@@ -130,11 +170,14 @@ function LoginForm({
           </Link>
         </div>
         <div className="relative">
-          <Input 
-            id="password" 
-            type={showPassword ? "text" : "password"} 
+          <Input
+            id="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Enter password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="h-12 bg-muted border-border pr-10"
+            required
           />
           <button
             type="button"
@@ -147,26 +190,72 @@ function LoginForm({
       </div>
 
       {/* Submit */}
-      <Button type="submit" className="w-full h-12 gradient-bg hover:opacity-90 text-white mt-6">
-        Sign In
+      <Button
+        type="submit"
+        disabled={isLoading}
+        className="w-full h-12 gradient-bg hover:opacity-90 text-white mt-6"
+      >
+        {isLoading ? (
+          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        ) : "Sign In"}
       </Button>
     </form>
   )
 }
 
-function RegisterForm({ 
-  showPassword, 
-  setShowPassword 
-}: { 
+function RegisterForm({
+  showPassword,
+  setShowPassword
+}: {
   showPassword: boolean
-  setShowPassword: (show: boolean) => void 
+  setShowPassword: (show: boolean) => void
 }) {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [message, setMessage] = useState("")
+  const supabase = createClient()
+
+  const handleGoogleSignup = async () => {
+    setError("")
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+  }
+
+  const handleEmailRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
+    setMessage("")
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+
+    if (error) {
+      setError(error.message)
+    } else {
+      setMessage("Check your email for a confirmation link!")
+    }
+    setIsLoading(false)
+  }
+
   return (
-    <form className="space-y-4">
+    <form onSubmit={handleEmailRegister} className="space-y-4">
       {/* Google Button */}
-      <Button 
-        type="button" 
-        variant="outline" 
+      <Button
+        type="button"
+        onClick={handleGoogleSignup}
+        variant="outline"
         className="w-full h-12 bg-white hover:bg-gray-50 text-gray-900 border-gray-200 gap-3"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -188,25 +277,20 @@ function RegisterForm({
         </div>
       </div>
 
-      {/* Name */}
-      <div className="space-y-2">
-        <Label htmlFor="name">Full Name</Label>
-        <Input 
-          id="name" 
-          type="text" 
-          placeholder="Your name"
-          className="h-12 bg-muted border-border"
-        />
-      </div>
+      {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+      {message && <p className="text-sm text-green-500 text-center">{message}</p>}
 
       {/* Email */}
       <div className="space-y-2">
         <Label htmlFor="reg-email">Email</Label>
-        <Input 
-          id="reg-email" 
-          type="email" 
+        <Input
+          id="reg-email"
+          type="email"
           placeholder="your@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="h-12 bg-muted border-border"
+          required
         />
       </div>
 
@@ -214,11 +298,15 @@ function RegisterForm({
       <div className="space-y-2">
         <Label htmlFor="reg-password">Password</Label>
         <div className="relative">
-          <Input 
-            id="reg-password" 
-            type={showPassword ? "text" : "password"} 
-            placeholder="Create password"
+          <Input
+            id="reg-password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Create password (min 6 chars)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="h-12 bg-muted border-border pr-10"
+            required
+            minLength={6}
           />
           <button
             type="button"
@@ -230,20 +318,15 @@ function RegisterForm({
         </div>
       </div>
 
-      {/* Confirm Password */}
-      <div className="space-y-2">
-        <Label htmlFor="confirm-password">Confirm Password</Label>
-        <Input 
-          id="confirm-password" 
-          type="password" 
-          placeholder="Confirm password"
-          className="h-12 bg-muted border-border"
-        />
-      </div>
-
       {/* Submit */}
-      <Button type="submit" className="w-full h-12 gradient-bg hover:opacity-90 text-white mt-6">
-        Create Account
+      <Button
+        type="submit"
+        disabled={isLoading}
+        className="w-full h-12 gradient-bg hover:opacity-90 text-white mt-6"
+      >
+        {isLoading ? (
+          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        ) : "Create Account"}
       </Button>
     </form>
   )
