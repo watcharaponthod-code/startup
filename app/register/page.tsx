@@ -25,14 +25,45 @@ export default function RegisterPage() {
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+  const [error, setError] = useState("")
+  const [message, setMessage] = useState("")
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setIsLoading(false)
-    // Redirect to dashboard after registration
-    window.location.href = "/dashboard"
+    setError("")
+    setMessage("")
+
+    const { createClient } = await import("@/lib/supabase/client")
+    const supabase = createClient()
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: name },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+
+    if (error) {
+      setError(error.message)
+      setIsLoading(false)
+    } else {
+      setMessage("Check your email for a confirmation link!")
+      setIsLoading(false)
+    }
+  }
+
+  const handleGoogleSignup = async () => {
+    const { createClient } = await import("@/lib/supabase/client")
+    const supabase = createClient()
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
   }
 
   const benefits = [
@@ -131,8 +162,10 @@ export default function RegisterPage() {
           </div>
 
           {/* Google Sign Up */}
-          <Button 
-            variant="outline" 
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleGoogleSignup}
             className="w-full h-12 mb-6 border-border hover:bg-card gap-3"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -154,6 +187,9 @@ export default function RegisterPage() {
               </span>
             </div>
           </div>
+
+          {error && <p className="text-sm text-red-500 text-center mb-2">{error}</p>}
+          {message && <p className="text-sm text-green-500 text-center mb-2">{message}</p>}
 
           {/* Register Form */}
           <form onSubmit={handleRegister} className="space-y-4">
