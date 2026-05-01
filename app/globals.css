@@ -1,0 +1,336 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* PostAI Minimalist Black Theme */
+  --background: #050505;
+  --foreground: #e8e8e8;
+  --card: #0a0a0a;
+  --card-foreground: #e8e8e8;
+  --popover: #0a0a0a;
+  --popover-foreground: #e8e8e8;
+  --primary: #ffffff;
+  --primary-foreground: #050505;
+  --secondary: #6366f1;
+  --secondary-foreground: #ffffff;
+  --muted: #141414;
+  --muted-foreground: #707070;
+  --accent: #6366f1;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.06);
+  --input: #141414;
+  --ring: #6366f1;
+  --chart-1: #6366f1;
+  --chart-2: #ec4899;
+  --chart-3: #10b981;
+  --chart-4: #f59e0b;
+  --chart-5: #ef4444;
+  --radius: 0.5rem;
+  --sidebar: #080808;
+  --sidebar-foreground: #e8e8e8;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #050505;
+  --sidebar-accent: rgba(99, 102, 241, 0.1);
+  --sidebar-accent-foreground: #e8e8e8;
+  --sidebar-border: rgba(255, 255, 255, 0.04);
+  --sidebar-ring: #6366f1;
+  
+  /* Custom PostAI tokens */
+  --surface: #0a0a0a;
+  --surface-elevated: #111111;
+  --glow-primary: rgba(99, 102, 241, 0.15);
+  --glow-accent: rgba(236, 72, 153, 0.15);
+  --noise-opacity: 0.025;
+  --grain-size: 120;
+}
+
+.dark {
+  --background: #050505;
+  --foreground: #e8e8e8;
+  --card: #0a0a0a;
+  --card-foreground: #e8e8e8;
+  --popover: #0a0a0a;
+  --popover-foreground: #e8e8e8;
+  --primary: #ffffff;
+  --primary-foreground: #050505;
+  --secondary: #6366f1;
+  --secondary-foreground: #ffffff;
+  --muted: #141414;
+  --muted-foreground: #707070;
+  --accent: #6366f1;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.06);
+  --input: #141414;
+  --ring: #6366f1;
+  --sidebar: #080808;
+  --sidebar-foreground: #e8e8e8;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #050505;
+  --sidebar-accent: rgba(99, 102, 241, 0.1);
+  --sidebar-accent-foreground: #e8e8e8;
+  --sidebar-border: rgba(255, 255, 255, 0.04);
+  --sidebar-ring: #6366f1;
+}
+
+@theme inline {
+  --font-sans: 'Inter', 'Inter Fallback', sans-serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom utility classes for PostAI - Aged/Worn Aesthetic */
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #6366f1 100%);
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+}
+
+.glass {
+  background: rgba(10, 10, 10, 0.4);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: rgba(15, 15, 15, 0.4);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.glow-subtle {
+  box-shadow: 0 0 60px rgba(99, 102, 241, 0.08);
+}
+
+.glow-accent {
+  box-shadow: 0 0 80px rgba(236, 72, 153, 0.1);
+}
+
+/* Aged/Worn texture overlay */
+.noise {
+  position: relative;
+}
+
+.noise::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: var(--noise-opacity);
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: overlay;
+}
+
+/* Vignette effect for aged look */
+.vignette::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Worn border effect */
+.worn-border {
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  position: relative;
+}
+
+.worn-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%, rgba(255,255,255,0.04) 100%) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  border-radius: inherit;
+}
+
+/* Story slide animation */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-8px) rotate(1deg); }
+  75% { transform: translateY(8px) rotate(-1deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.animate-float-gentle {
+  animation: float-gentle 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* Horizontal scroll for story posts */
+.story-scroll {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 1rem 0;
+}
+
+.story-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Auto-scrolling animation for story posts */
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.auto-scroll {
+  animation: scroll-left 30s linear infinite;
+}
+
+.auto-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Scanline effect for retro feel */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Faded text effect */
+.text-faded {
+  color: #505050;
+}
+
+/* Distressed button hover */
+.btn-worn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-worn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.btn-worn:hover::before {
+  transform: translateX(100%);
+}
